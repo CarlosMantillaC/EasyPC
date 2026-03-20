@@ -112,7 +112,6 @@ function LoginPage({ onLogin, status }) {
           </button>
 
           <div className="mt-12 rounded-full bg-[#0D7FF21A] px-6 py-2 flex items-center gap-2">
-            <AppLogoIcon className="w-4 h-4" />
             <span className="text-[#0D7FF2] text-base font-medium">Toca el botón para jugar</span>
           </div>
 
@@ -139,7 +138,7 @@ function HomePage({ user, onLogout }) {
             <div className="w-10 h-10 rounded-full bg-[#0D7FF21A] flex items-center justify-center">
               <AppLogoIcon className="w-4 h-4" />
             </div>
-            <h2 className="text-2xl font-extrabold tracking-[-0.6px] text-slate-900">Aprende PC</h2>
+            <h2 className="text-2xl font-extrabold tracking-[-0.6px] text-slate-900">Easy PC</h2>
           </div>
 
           <div className="flex items-center gap-3">
