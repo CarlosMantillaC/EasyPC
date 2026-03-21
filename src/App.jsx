@@ -9,6 +9,7 @@ import "./App.css";
 import { auth } from "./firebase";
 import LoginPage from "./components/LoginPage";
 import HomePage from "./components/HomePage";
+import Layout from "./shared/components/Layout";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -56,10 +57,14 @@ function App() {
     );
   }
 
-  return user ? (
-    <HomePage user={user} onLogout={handleLogout} />
-  ) : (
-    <LoginPage onLogin={handleGoogleLogin} status={status} />
+  return (
+    <Layout user={user} onLogout={handleLogout}>
+      {user ? (
+        <HomePage user={user} />
+      ) : (
+        <LoginPage onLogin={handleGoogleLogin} status={status} />
+      )}
+    </Layout>
   );
 }
 
