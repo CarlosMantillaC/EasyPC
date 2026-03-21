@@ -5,7 +5,7 @@ export default function AppLogoIcon({ className = "w-5 h-5", color = "currentCol
       viewBox="0 0 210 210"
       version="1.1"
       id="svg1"
-      xml:space="preserve"
+      xmlSpace="preserve"
       xmlns="http://www.w3.org/2000/svg"
       style={{ fill: color }}
     >

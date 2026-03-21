@@ -4,6 +4,10 @@ import BrainIcon from "./BrainIcon";
 import MemoryIcon from "./MemoryIcon";
 import HeartIcon from "./HeartIcon";
 import StorageIcon from "./StorageIcon";
+import { getUserProgress, updateProgress } from "../services/firestoreService";
+import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getProgressMessage, getLevelConfig } from "../services/levelUtils";
+import { MODULE_INFO } from "../services/constants/levels";
+import { useState, useEffect } from "react";
 
 function UserIcon({ className = "w-4 h-4" }) {
   return (
@@ -102,6 +106,49 @@ function LevelCard({
 }
 
 export default function PiecesModulePage({ user, onBack }) {
+  const [userProgress, setUserProgress] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Cargar progreso del usuario usando el servicio limpio
+  useEffect(() => {
+    const loadUserProgress = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const progress = await getUserProgress(user.uid);
+        setUserProgress(progress);
+      } catch (error) {
+        console.error("Error cargando progreso:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUserProgress();
+  }, [user]);
+
+  // Función para actualizar progreso usando el servicio
+  const handleLevelComplete = async (levelNumber) => {
+    if (!user) return;
+    
+    try {
+      const updatedProgress = await updateProgress(user.uid, levelNumber);
+      setUserProgress(updatedProgress);
+    } catch (error) {
+      console.error("Error actualizando progreso:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-300 bg-[#F5F7F8] flex items-center justify-center">
+        <div className="text-lg font-medium text-slate-600">Cargando progreso...</div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-300 bg-[#F5F7F8] flex flex-col">
       <div className="w-full min-h-300 overflow-y-auto flex justify-center px-6 lg:px-1 xl:px-4 py-5">
@@ -127,40 +174,42 @@ export default function PiecesModulePage({ user, onBack }) {
 
           <section className="pb-6">
             <div className="bg-white border border-[#F1F5F9] rounded-[48px] px-4 pt-3.75 pb-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-              <h1 className="text-[30px] leading-9.5 font-bold text-slate-900">Niveles: Conoce las Piezas</h1>
-              <p className="text-base leading-6 font-normal text-slate-500">Explora los componentes de tu computadora y conviértete en un experto!</p>
+              <h1 className="text-[30px] leading-9.5 font-bold text-slate-900">{MODULE_INFO.name}</h1>
+              <p className="text-base leading-6 font-normal text-slate-500">{MODULE_INFO.description}</p>
             </div>
           </section>
 
           <section className="pb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <LevelCard
-                title="Nivel 1: El Cerebro"
-                subtitle="¡Juega ahora!"
-                variant="active"
-                active
-                icon={BrainIcon}
-              />
+              {Array.from({ length: MODULE_INFO.totalLevels }, (_, index) => {
+                const levelNumber = index + 1;
+                const levelConfig = getLevelConfig(levelNumber);
+                const levelStatus = getLevelStatus(levelNumber, userProgress);
+                const IconComponent = levelConfig.icon === "BrainIcon" ? BrainIcon : 
+                                   levelConfig.icon === "MemoryIcon" ? MemoryIcon :
+                                   levelConfig.icon === "HeartIcon" ? HeartIcon : StorageIcon;
 
-              <LevelCard
-                title="Nivel 2: La Memoria"
-                subtitle="Bloqueado"
-                variant="locked"
-                icon={MemoryIcon}
-              />
-
-              <LevelCard 
-                title="Nivel 3: El Corazón" 
-                subtitle="Bloqueado" 
-                variant="locked" 
-                icon={HeartIcon}
-              />
-              <LevelCard 
-                title="Nivel 4: El Almacén" 
-                subtitle="Bloqueado" 
-                variant="locked" 
-                icon={StorageIcon}
-              />
+                return (
+                  <div key={levelNumber} className="space-y-2">
+                    <LevelCard
+                      title={levelConfig.title}
+                      subtitle={getLevelSubtitle(levelNumber, userProgress)}
+                      variant={levelStatus.variant}
+                      active={levelStatus.active}
+                      completed={levelStatus.completed}
+                      icon={IconComponent}
+                    />
+                    {levelStatus.active && (
+                      <button
+                        onClick={() => handleLevelComplete(levelNumber)}
+                        className="w-full mt-2 px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-medium"
+                      >
+                        🧪 Completar Nivel {levelNumber} (Prueba)
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </section>
 
@@ -171,16 +220,25 @@ export default function PiecesModulePage({ user, onBack }) {
                   <ComponentsIcon className="w-6 h-7" color="#0D7FF2" />
                   <span className="text-base leading-6 font-semibold text-slate-900">Progreso del módulo</span>
                 </div>
-                <span className="text-sm leading-5 font-bold text-[#0D7FF2]">25%</span>
+                {userProgress && (
+                  <div className="text-right">
+                    <span className="text-sm leading-5 font-medium text-slate-500">
+                      {userProgress.completedLevels.length} de {MODULE_INFO.totalLevels} niveles completados
+                    </span>
+                    <p className="text-xs leading-4 font-normal text-slate-400">
+                      {getProgressMessage(userProgress)}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="mt-4 h-4 rounded-full bg-[#F1F5F9] overflow-hidden">
-                <div className="h-full w-1/4 bg-[#0D7FF2]" />
-              </div>
-
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-sm leading-5 font-medium text-slate-500">1 de 4 niveles completados</span>
-                <span className="text-xs leading-4 font-normal text-slate-400">¡Sigue así, vas por buen camino!</span>
+                {userProgress && (
+                  <div 
+                    className="h-full bg-[#0D7FF2] transition-all duration-500" 
+                    style={{ width: `${getProgressPercentage(userProgress)}%` }}
+                  />
+                )}
               </div>
             </div>
           </section>

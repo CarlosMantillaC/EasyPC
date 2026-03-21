@@ -1,0 +1,16 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Reglas para la colección userProgress
+    match /userProgress/{userId} {
+      // Solo el usuario dueño puede leer y escribir su progreso
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Reglas para cualquier otra colección (denegar por defecto)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
