@@ -1,4 +1,5 @@
 import AppLogoIcon from "./AppLogoIcon";
+import LockIcon from "./LockIcon";
 
 export default function LearningCard({
   title,
@@ -9,6 +10,7 @@ export default function LearningCard({
   buttonLabel,
   locked = false,
   onClick,
+  icon: Icon = AppLogoIcon,
 }) {
   // Lógica de iconos sugerida anteriormente integrada en el diseño original
   const getIconColor = () => borderColor;
@@ -24,7 +26,7 @@ export default function LearningCard({
         className="w-48 h-48 rounded-full flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3"
         style={{ backgroundColor: softColor }}
       >
-        <AppLogoIcon className="w-20 h-20" color={getIconColor()} />
+        <Icon className="w-20 h-20" color={getIconColor()} />
       </div>
 
       <h3 className="mt-6 text-4xl leading-9 font-extrabold text-slate-900 text-center">{title}</h3>
@@ -44,7 +46,7 @@ export default function LearningCard({
 
       {locked ? (
         <div className="absolute inset-1 rounded-[44px] bg-slate-900/80 flex flex-col items-center justify-center px-6 backdrop-blur-[2px]">
-          <div className="w-15 h-18 flex items-center justify-center text-white text-5xl animate-pulse">🔒</div>
+          <LockIcon className="w-10 h-13" />
           <p className="mt-4 text-white text-lg leading-5.5 font-bold text-center max-w-57">
             Nivel Bloqueado
           </p>
