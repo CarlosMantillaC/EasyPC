@@ -4,7 +4,7 @@ import CleaningIcon from "./CleaningIcon";
 import ComponentsIcon from "./ComponentsIcon";
 import AssemblyIcon from "./AssemblyIcon";
 
-export default function HomePage({ user }) {
+export default function HomePage({ user, onOpenPieces }) {
   const primerNombre = user?.displayName?.split(' ')[0] || 'Explorador';
 
   return (
@@ -26,6 +26,7 @@ export default function HomePage({ user }) {
             buttonColor="#6BCB77"
             buttonLabel="Explorar"
             icon={ComponentsIcon}
+            onClick={onOpenPieces}
           />
 
           <LearningCard

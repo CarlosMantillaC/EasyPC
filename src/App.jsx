@@ -9,12 +9,14 @@ import "./App.css";
 import { auth } from "./firebase";
 import LoginPage from "./components/LoginPage";
 import HomePage from "./components/HomePage";
+import PiecesModulePage from "./components/PiecesModulePage";
 import Layout from "./shared/components/Layout";
 
 function App() {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState("No autenticado");
   const [loading, setLoading] = useState(true);
+  const [currentView, setCurrentView] = useState("home");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -41,6 +43,7 @@ function App() {
     try {
       await signOut(auth);
       setStatus("Sesión cerrada");
+      setCurrentView("home");
     } catch (error) {
       setStatus(`ERROR: ${error.code} - ${error.message}`);
     }
@@ -58,9 +61,17 @@ function App() {
   }
 
   return (
-    <Layout user={user} onLogout={handleLogout}>
+    <Layout
+      user={user}
+      onLogout={handleLogout}
+      showHeader={user ? currentView !== "pieces" : false}
+    >
       {user ? (
-        <HomePage user={user} />
+        currentView === "pieces" ? (
+          <PiecesModulePage user={user} onBack={() => setCurrentView("home")} />
+        ) : (
+          <HomePage user={user} onOpenPieces={() => setCurrentView("pieces")} />
+        )
       ) : (
         <LoginPage onLogin={handleGoogleLogin} status={status} />
       )}

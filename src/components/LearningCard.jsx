@@ -35,7 +35,9 @@ export default function LearningCard({
       </p>
 
       <button
-        className="mt-8 h-13 px-8 rounded-full text-lg font-bold transition-all duration-300 group-hover:scale-105"
+        className={`mt-8 h-13 px-8 rounded-full text-lg font-bold transition-all duration-300 group-hover:scale-105 ${
+          locked ? "cursor-not-allowed" : "cursor-pointer"
+        }`}
         style={{ 
           backgroundColor: buttonColor, 
           color: buttonColor === "#FFD93D" ? "#0F172A" : "#FFFFFF" 
