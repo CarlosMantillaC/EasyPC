@@ -33,7 +33,10 @@ export default function HomePage({ user, onLogout }) {
                 <img
                   src={user?.photoURL || "https://api.dicebear.com/9.x/adventurer/svg?seed=Explorer"}
                   alt="Avatar"
-                  className="w-full h-full rounded-full bg-slate-200 shadow-sm"
+                  className="w-full h-full rounded-full bg-slate-200 shadow-sm object-cover"
+                  onError={(e) => {
+                    e.target.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${user?.displayName || 'Explorer'}`;
+                  }}
                 />
               </div>
               <div>
