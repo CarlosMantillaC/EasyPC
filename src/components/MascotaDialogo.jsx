@@ -1,4 +1,4 @@
-import Mpensando1 from "../assets/images/Mascota/Mpensando1.png";
+import Mexplorador from "../assets/images/Mascota/Mexplorador.png";
 
 export default function MascotaDialogo({ titulo, mensaje, reverse = false }) {
   return (
@@ -6,7 +6,7 @@ export default function MascotaDialogo({ titulo, mensaje, reverse = false }) {
       <div className="relative group">
         <div className="w-40 h-40 md:w-48 md:h-48">
           <img 
-            src={Mpensando1} 
+            src={Mexplorador} 
             alt="Mascota EasyPC" 
             className="w-full h-full object-contain"
             onError={(e) => {
