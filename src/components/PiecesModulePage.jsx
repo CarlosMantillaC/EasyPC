@@ -8,20 +8,7 @@ import { getUserProgress, updateProgress } from "../services/firestoreService";
 import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getProgressMessage, getLevelConfig } from "../services/levelUtils";
 import { MODULE_INFO } from "../services/constants/levels";
 import { useState, useEffect } from "react";
-
-function UserIcon({ className = "w-4 h-4" }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M20 21a8 8 0 0 0-16 0"
-        stroke="#0D7FF2"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-      <circle cx="12" cy="8" r="4" stroke="#0D7FF2" strokeWidth="1.6" />
-    </svg>
-  );
-}
+import UserProfileButton from "../shared/components/UserProfileButton";
 
 function LevelCard({
   title,
@@ -161,13 +148,12 @@ export default function PiecesModulePage({ user, onBack }) {
               </div>
 
               <div className="flex items-center gap-4">
-                <button className="w-10 h-10 rounded-full bg-[#0D7FF2]/10 flex items-center justify-center" type="button" aria-label="Perfil">
-                  {user?.photoURL ? (
-                    <img src={user.photoURL} alt="Perfil" className="w-8 h-8 rounded-full" />
-                  ) : (
-                    <UserIcon />
-                  )}
-                </button>
+                <UserProfileButton 
+                  user={user}
+                  size="medium"
+                  showBorder={false}
+                  fallbackType="icon"
+                />
               </div>
             </div>
           </header>

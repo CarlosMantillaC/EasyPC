@@ -2,6 +2,7 @@ import AppLogoIcon from "../../components/AppLogoIcon";
 import LogoutIcon from "../../components/LogoutIcon";
 import mascotMirador from "../../assets/images/Mascota/mirador.png";
 import { useState } from "react";
+import UserProfileButton from "./UserProfileButton";
 
 export default function Header({ user, onLogout }) {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
@@ -31,10 +32,11 @@ export default function Header({ user, onLogout }) {
       <div className="flex items-center gap-4">
         {/* FOTO DE PERFIL DEL USUARIO */}
         <div className="flex items-center gap-3">
-          <img 
-            src={user?.photoURL || "https://api.dicebear.com/9.x/adventurer/svg?seed=Explorer"} 
-            alt="Perfil" 
-            className="w-12 h-12 rounded-full border-2 border-blue-100 shadow-sm"
+          <UserProfileButton 
+            user={user}
+            size="large"
+            showBorder={true}
+            fallbackType="initial"
           />
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-colors shadow-sm"

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -14,6 +14,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+
+// Configurar la persistencia de la autenticación para que la sesión se mantenga
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Persistencia de autenticación configurada correctamente");
+  })
+  .catch((error) => {
+    console.error("Error configurando persistencia:", error);
+  });
+
 const db = getFirestore(app);
 
 export { app, auth, db };

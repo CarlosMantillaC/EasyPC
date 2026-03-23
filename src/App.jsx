@@ -20,6 +20,21 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("Estado de autenticación cambiado:", currentUser);
+      console.log("Photo URL:", currentUser?.photoURL);
+      console.log("Display Name:", currentUser?.displayName);
+      
+      // FORZAR RECARGA DE USUARIO SI NO HAY FOTO
+      if (currentUser && !currentUser.photoURL) {
+        console.log("USUARIO SIN FOTO - INTENTANDO RECARGAR DATOS");
+        currentUser.reload().then(() => {
+          console.log("Usuario recargado:", currentUser);
+          console.log("Photo URL después de recargar:", currentUser.photoURL);
+        }).catch(error => {
+          console.error("Error recargando usuario:", error);
+        });
+      }
+      
       setUser(currentUser);
       setStatus(currentUser ? "Sesión activa" : "No autenticado");
       setLoading(false);
@@ -30,11 +45,33 @@ function App() {
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
+    
+    // Forzar la obtención de la foto de perfil con alta calidad
+    provider.addScope('profile');
+    provider.addScope('email');
+    provider.setCustomParameters({
+      'prompt': 'select_account',
+      'access_type': 'offline'
+    });
 
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      console.log("Usuario autenticado:", result.user);
+      console.log("Photo URL disponible:", result.user?.photoURL);
+      console.log("Photo URL completo:", result.user?.photoURL);
+      
+      // Verificar que tenemos la URL de la foto
+      if (result.user?.photoURL) {
+        // Asegurarnos de que la URL tenga el tamaño correcto
+        const photoUrl = result.user.photoURL.includes('sz=') 
+          ? result.user.photoURL 
+          : `${result.user.photoURL}?sz=200`;
+        console.log("URL de foto procesada:", photoUrl);
+      }
+      
       setStatus("Login con Google exitoso");
     } catch (error) {
+      console.error("Error en login con Google:", error);
       setStatus(`ERROR: ${error.code} - ${error.message}`);
     }
   };
