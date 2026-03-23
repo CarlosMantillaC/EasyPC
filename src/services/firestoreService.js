@@ -39,7 +39,7 @@ export const getUserProgress = async (userId) => {
  * @param {number} score - Puntos obtenidos (opcional)
  * @returns {Promise<Object>} - Progreso actualizado
  */
-export const updateProgress = async (userId, levelCompleted, score = 100) => {
+export const updateProgress = async (userId, levelCompleted, score = 10) => {
   if (!userId || !levelCompleted) {
     throw new Error('Se requieren userId y levelCompleted');
   }
@@ -60,6 +60,41 @@ export const updateProgress = async (userId, levelCompleted, score = 100) => {
   } catch (error) {
     console.error('Error actualizando progreso:', error);
     throw new Error('Error al actualizar progreso');
+  }
+};
+
+/**
+ * Actualiza las estrellas del usuario
+ * @param {string} userId - ID del usuario
+ * @param {number} newStars - Nueva cantidad de estrellas
+ * @returns {Promise<Object>} - Progreso actualizado
+ */
+export const updateStars = async (userId, newStars) => {
+  if (!userId) {
+    throw new Error('Se requiere userId para actualizar estrellas');
+  }
+
+  try {
+    const userProgressRef = doc(db, COLLECTION_NAME, userId);
+    const docSnap = await getDoc(userProgressRef);
+    
+    if (!docSnap.exists()) {
+      throw new Error('Usuario no encontrado');
+    }
+    
+    const currentData = docSnap.data();
+    const updatedProgress = {
+      ...currentData,
+      totalScore: newStars,
+      lastUpdated: new Date()
+    };
+    
+    await setDoc(userProgressRef, updatedProgress);
+    console.log('Estrellas actualizadas en Firestore:', newStars);
+    return updatedProgress;
+  } catch (error) {
+    console.error('Error actualizando estrellas:', error);
+    throw new Error('Error al actualizar estrellas');
   }
 };
 

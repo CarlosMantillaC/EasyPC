@@ -1,33 +1,75 @@
 import { useState, useEffect } from 'react';
 import { StarIcon } from '../../components/StarIcon';
+import { getUserProgress, updateStars as updateUserStars } from '../../services/firestoreService';
 
 export default function StarRating({ user, levelNumber = 1 }) {
   const [state, setState] = useState({ stars: 0, levelCompletions: 0 });
 
-  // Cargar datos del localStorage al montar
+  // Cargar datos desde Firestore al montar
   useEffect(() => {
-    const savedStars = localStorage.getItem(`user_${user?.uid}_stars`) || '0';
-    const savedCompletions = localStorage.getItem(`user_${user?.uid}_level_${levelNumber}_completions`) || '0';
-    
-    setState({
-      stars: parseInt(savedStars),
-      levelCompletions: parseInt(savedCompletions)
-    });
+    const loadUserStars = async () => {
+      if (!user) return;
+      
+      try {
+        const userProgress = await getUserProgress(user.uid);
+        const userStars = userProgress?.totalScore || 0;
+        const levelCompletions = userProgress?.completedLevels?.filter(level => level === levelNumber)?.length || 0;
+        
+        setState({
+          stars: userStars,
+          levelCompletions: levelCompletions
+        });
+      } catch (error) {
+        console.error('Error cargando estrellas desde Firestore:', error);
+        // Fallback a localStorage si hay error
+        const savedStars = localStorage.getItem(`user_${user?.uid}_stars`) || '0';
+        const savedCompletions = localStorage.getItem(`user_${user?.uid}_level_${levelNumber}_completions`) || '0';
+        
+        setState({
+          stars: parseInt(savedStars),
+          levelCompletions: parseInt(savedCompletions)
+        });
+      }
+    };
+
+    loadUserStars();
   }, [user, levelNumber]);
 
   // Función para actualizar estrellas cuando se completa el nivel
-  const updateStars = () => {
-    const newStars = state.stars + 10;
-    const newCompletions = state.levelCompletions + 1;
+  const updateStars = async () => {
+    if (!user) return;
     
-    setState({
-      stars: newStars,
-      levelCompletions: newCompletions
-    });
-    
-    // Guardar en localStorage
-    localStorage.setItem(`user_${user?.uid}_stars`, newStars.toString());
-    localStorage.setItem(`user_${user?.uid}_level_${levelNumber}_completions`, newCompletions.toString());
+    // Obtener el valor actualizado desde Firestore para asegurar consistencia
+    try {
+      const userProgress = await getUserProgress(user.uid);
+      const currentStars = userProgress?.totalScore || 0;
+      
+      // Siempre añadir exactamente 10 estrellas por cada nivel completado
+      const newStars = currentStars + 10;
+      const newCompletions = state.levelCompletions + 1;
+      
+      console.log('Actualizando estrellas:', {
+        currentStars: currentStars,
+        newStars: newStars,
+        levelCompletions: newCompletions
+      });
+      
+      // Guardar en Firestore usando la función específica para estrellas
+      await updateUserStars(user.uid, newStars);
+      
+      setState({
+        stars: newStars,
+        levelCompletions: newCompletions
+      });
+      
+      console.log('Estrellas guardadas en Firestore:', newStars);
+    } catch (error) {
+      console.error('Error guardando estrellas en Firestore:', error);
+      // Fallback a localStorage si hay error
+      const fallbackStars = state.stars + 10;
+      localStorage.setItem(`user_${user?.uid}_stars`, fallbackStars.toString());
+      localStorage.setItem(`user_${user?.uid}_level_${levelNumber}_completions`, (state.levelCompletions + 1).toString());
+    }
   };
 
   // Exponer función global para que otros componentes puedan llamarla
