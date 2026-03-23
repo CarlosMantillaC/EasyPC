@@ -5,7 +5,7 @@
 export const PIECES_LEVELS = {
   1: {
     id: 1,
-    title: "Nivel 1: El Cerebro",
+    title: "El Cerebro",
     subtitle: {
       locked: "Bloqueado",
       active: "¡Juega ahora!",
@@ -16,7 +16,7 @@ export const PIECES_LEVELS = {
   },
   2: {
     id: 2,
-    title: "Nivel 2: La Memoria",
+    title: "La Memoria",
     subtitle: {
       locked: "Bloqueado",
       active: "¡Juega ahora!",
@@ -27,7 +27,7 @@ export const PIECES_LEVELS = {
   },
   3: {
     id: 3,
-    title: "Nivel 3: El Corazón",
+    title: "El Corazón",
     subtitle: {
       locked: "Bloqueado",
       active: "¡Juega ahora!",
@@ -38,7 +38,7 @@ export const PIECES_LEVELS = {
   },
   4: {
     id: 4,
-    title: "Nivel 4: El Almacén",
+    title: "El Almacén",
     subtitle: {
       locked: "Bloqueado",
       active: "¡Juega ahora!",
