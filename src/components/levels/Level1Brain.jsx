@@ -39,7 +39,7 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
     : 'easypc_level1_last_initial_processor_index_guest';
 
   const [selectedOption, setSelectedOption] = useState(null);
-  const [progress, setProgress] = useState(30);
+  const [progress, setProgress] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
   const [score, setScore] = useState(0);
   const [isHelpExpanded, setIsHelpExpanded] = useState(false);
@@ -196,7 +196,7 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
       
       // Correct answer - update score and progress
       const newScore = score + 10;
-      const newProgress = Math.min(100, progress + 14);
+      const newProgress = Math.min(100, progress + 20);
       setScore(newScore);
       setProgress(newProgress);
       
@@ -386,7 +386,7 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
               className="h-14 min-w-60 max-w-120 rounded-full bg-[#0D7FF2] text-white px-8 flex items-center justify-center gap-3 cursor-pointer hover:bg-[#0D7FF2]/90 hover:shadow-lg hover:scale-105 transition-all duration-200 font-bold text-lg"
             >
               <span className="text-[22px]">←</span>
-              <span>Volver al módulo Piezas</span>
+              <span>Volver al Módulo Piezas</span>
             </button>
           </section>
         </div>

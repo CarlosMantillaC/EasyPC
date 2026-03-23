@@ -5,10 +5,11 @@ import MemoryIcon from "./MemoryIcon";
 import HeartIcon from "./HeartIcon";
 import StorageIcon from "./StorageIcon";
 import { getUserProgress, updateProgress } from "../services/firestoreService";
-import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getProgressMessage, getLevelConfig } from "../services/levelUtils";
+import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getLevelConfig } from "../services/levelUtils";
 import { MODULE_INFO } from "../services/constants/levels";
 import { useState, useEffect } from "react";
 import UserProfileButton from "../shared/components/UserProfileButton";
+import ProgressBar from "../shared/components/ProgressBar";
 import Level1Brain from "./levels/Level1Brain";
 
 function LevelCard({
@@ -75,8 +76,12 @@ function LevelCard({
         ) : null}
 
         {completed ? (
-          <div className="absolute top-2 right-2 w-5.5 h-7 rounded-full bg-[#22C55E] flex items-center justify-center text-white text-xs font-bold">
-            ✓
+          <div className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center">
+            <div className="w-full h-full bg-green-500 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
           </div>
         ) : null}
       </div>
@@ -183,6 +188,11 @@ export default function PiecesModulePage({ user, onBack }) {
           </header>
 
           <section className="pb-6">
+            <div className="px-4 mt-4 mb-8">
+              <p className="text-base leading-6 font-semibold text-slate-900 mb-4">Progreso</p>
+              <ProgressBar progress={userProgress ? getProgressPercentage(userProgress) : 0} />
+            </div>
+
             <div className="bg-white border border-[#F1F5F9] rounded-[48px] px-4 pt-3.75 pb-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
               <h1 className="text-[30px] leading-9.5 font-bold text-slate-900">{MODULE_INFO.name}</h1>
               <p className="text-base leading-6 font-normal text-slate-500">{MODULE_INFO.description}</p>
@@ -210,51 +220,13 @@ export default function PiecesModulePage({ user, onBack }) {
                       icon={IconComponent}
                       onClick={() => handleLevelClick(levelNumber)}
                     />
-                    {levelStatus.active && (
-                      <button
-                        onClick={() => handleLevelClick(levelNumber)}
-                        className="w-full mt-2 px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-medium"
-                      >
-                        🧪 Completar Nivel {levelNumber} (Prueba)
-                      </button>
-                    )}
                   </div>
                 );
               })}
             </div>
           </section>
 
-          <section className="pb-8">
-            <div className="bg-white border border-[#F1F5F9] rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] px-6 py-5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ComponentsIcon className="w-6 h-7" color="#0D7FF2" />
-                  <span className="text-base leading-6 font-semibold text-slate-900">Progreso del módulo</span>
-                </div>
-                {userProgress && (
-                  <div className="text-right">
-                    <span className="text-sm leading-5 font-medium text-slate-500">
-                      {userProgress.completedLevels.length} de {MODULE_INFO.totalLevels} niveles completados
-                    </span>
-                    <p className="text-xs leading-4 font-normal text-slate-400">
-                      {getProgressMessage(userProgress)}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4 h-4 rounded-full bg-[#F1F5F9] overflow-hidden">
-                {userProgress && (
-                  <div 
-                    className="h-full bg-[#0D7FF2] transition-all duration-500" 
-                    style={{ width: `${getProgressPercentage(userProgress)}%` }}
-                  />
-                )}
-              </div>
-            </div>
-          </section>
-
-          <section className="h-20 flex items-start justify-center py-3">
+          <section className="h-20 flex items-start justify-center py-18">
             <button
               type="button"
               onClick={onBack}
