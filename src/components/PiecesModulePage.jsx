@@ -9,6 +9,7 @@ import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getProgressMes
 import { MODULE_INFO } from "../services/constants/levels";
 import { useState, useEffect } from "react";
 import UserProfileButton from "../shared/components/UserProfileButton";
+import Level1Brain from "./levels/Level1Brain";
 
 function LevelCard({
   title,
@@ -17,6 +18,7 @@ function LevelCard({
   icon,
   active = false,
   completed = false,
+  onClick,
 }) {
   const isLocked = variant === "locked";
   const CardIcon = icon ?? ComponentsIcon;
@@ -24,8 +26,9 @@ function LevelCard({
   if (active) {
     return (
       <article
-      className={`relative bg-white border-4 border-[#0D7FF2] rounded-[48px] p-4.25 pb-10 shadow-[0_0_0_4px_rgba(13,127,242,0.2),0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] transition-all duration-500 shadow-sm group cursor-pointer hover:-translate-y-4 hover:shadow-2xl active:scale-95`}
-    >
+        onClick={onClick}
+        className={`relative bg-white border-4 border-[#0D7FF2] rounded-[48px] p-4.25 pb-10 shadow-[0_0_0_4px_rgba(13,127,242,0.2),0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] transition-all duration-500 shadow-sm group cursor-pointer hover:-translate-y-4 hover:shadow-2xl active:scale-95`}
+      >
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0D7FF2] text-white text-[10px] font-bold tracking-[1px] uppercase rounded-full px-4 py-1 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)]">
           Actual
         </span>
@@ -47,6 +50,7 @@ function LevelCard({
 
   return (
     <article
+      onClick={onClick}
       className={`relative rounded-[48px] p-4 pb-10 transition-all duration-500 shadow-sm group ${
         isLocked
           ? "bg-white/80 border border-[#E2E8F0] opacity-75 cursor-not-allowed"
@@ -95,6 +99,7 @@ function LevelCard({
 export default function PiecesModulePage({ user, onBack }) {
   const [userProgress, setUserProgress] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentLevel, setCurrentLevel] = useState(null);
 
   // Cargar progreso del usuario usando el servicio limpio
   useEffect(() => {
@@ -124,10 +129,30 @@ export default function PiecesModulePage({ user, onBack }) {
     try {
       const updatedProgress = await updateProgress(user.uid, levelNumber);
       setUserProgress(updatedProgress);
+      setCurrentLevel(null); // Volver a la vista de niveles después de completar
     } catch (error) {
       console.error("Error actualizando progreso:", error);
     }
   };
+
+  // Función para manejar el clic en una tarjeta de nivel
+  const handleLevelClick = (levelNumber) => {
+    const levelStatus = getLevelStatus(levelNumber, userProgress);
+    if (levelStatus.active || levelStatus.completed) {
+      setCurrentLevel(levelNumber);
+    }
+  };
+
+  // Si hay un nivel activo, mostrar el componente del nivel
+  if (currentLevel === 1) {
+    return (
+      <Level1Brain 
+        user={user}
+        onBack={() => setCurrentLevel(null)}
+        onLevelComplete={handleLevelComplete}
+      />
+    );
+  }
 
   if (loading) {
     return (
@@ -146,7 +171,6 @@ export default function PiecesModulePage({ user, onBack }) {
                 <ComponentsIcon className="w-9 h-11" color="#0D7FF2" />
                 <h2 className="text-2xl leading-7.5 tracking-[-0.6px] font-bold text-slate-900">Piezas</h2>
               </div>
-
               <div className="flex items-center gap-4">
                 <UserProfileButton 
                   user={user}
@@ -184,10 +208,11 @@ export default function PiecesModulePage({ user, onBack }) {
                       active={levelStatus.active}
                       completed={levelStatus.completed}
                       icon={IconComponent}
+                      onClick={() => handleLevelClick(levelNumber)}
                     />
                     {levelStatus.active && (
                       <button
-                        onClick={() => handleLevelComplete(levelNumber)}
+                        onClick={() => handleLevelClick(levelNumber)}
                         className="w-full mt-2 px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm font-medium"
                       >
                         🧪 Completar Nivel {levelNumber} (Prueba)
