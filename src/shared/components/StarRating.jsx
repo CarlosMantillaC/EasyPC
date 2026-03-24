@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { StarIcon } from '../../components/StarIcon';
-import { getUserProgress, updateStars as updateUserStars } from '../../services/firestoreService';
+import { getUserProgress, updateStars as updateUserStars } from '../services';
 
 export default function StarRating({ user, levelNumber = 1 }) {
   const [state, setState] = useState({ stars: 0, levelCompletions: 0 });

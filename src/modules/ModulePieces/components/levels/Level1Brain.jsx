@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChevronLeftIcon } from '../Icons';
-import UserProfileButton from '../../shared/components/UserProfileButton';
-import StarRating from '../../shared/components/StarRating';
-import ProgressBar from '../../shared/components/ProgressBar';
-import ComponentsIcon from "../ComponentsIcon.jsx";
-import BrainIcon from "../BrainIcon.jsx";
+import UserProfileButton from '../../../../shared/components/UserProfileButton';
+import StarRating from '../../../../shared/components/StarRating';
+import ProgressBar from '../../../../shared/components/ProgressBar';
+import BrainIcon from "../icons/BrainIcon.jsx";
 
 const NON_PROCESSOR_CARDS = ['ram', 'power'];
 
@@ -183,18 +181,15 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
   });
 
   const handleOptionClick = (option) => {
-    // Prevent clicking if already processing
     if (isProcessing) return;
     
     setSelectedOption(option.id);
-    setIsProcessing(true); // Start cooldown
+    setIsProcessing(true);
     
     if (option.correct) {
-      // Set correct feedback
       const randomCorrectMessage = correctMessages[Math.floor(Math.random() * correctMessages.length)];
       setFeedbackMessage(randomCorrectMessage);
       
-      // Correct answer - update score and progress
       const newScore = score + 10;
       const newProgress = Math.min(100, progress + 20);
       setScore(newScore);
@@ -202,39 +197,30 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
       
       setTimeout(() => {
         if (currentRound < 5) {
-          // Move to next round
           setCardOrder((previousOrder) => getNextCardOrder(previousOrder));
           setCurrentRound((previousRound) => previousRound + 1);
           setSelectedOption(null);
           setFeedbackMessage('');
-          setIsProcessing(false); // End cooldown
+          setIsProcessing(false);
         } else {
-          // Complete level after 5 rounds
           setProgress(100);
-          
-          // Actualizar estrellas usando la función global
-          if (window.updateLevelStars) {
-            window.updateLevelStars();
-          }
-          
           onLevelComplete(1);
         }
-      }, 2500); // 3 seconds cooldown
+      }, 2500);
     } else {
-      // Set incorrect feedback
       const randomIncorrectMessage = incorrectMessages[Math.floor(Math.random() * incorrectMessages.length)];
       setFeedbackMessage(randomIncorrectMessage);
       
       setTimeout(() => {
         setSelectedOption(null);
         setFeedbackMessage('');
-        setIsProcessing(false); // End cooldown
-      }, 2500); // 3 seconds cooldown
+        setIsProcessing(false);
+      }, 2500);
     }
   };
 
   return (
-    <div className="min-h-300 bg-[#F5F7F8] flex flex-col">
+    <div className="min-h-300 bg-white flex flex-col">
       <div className="w-full min-h-300 overflow-y-auto flex justify-center px-6 lg:px-1 xl:px-4 py-5">
         <div className="w-full max-w-360 min-h-288">
           <header className="pb-6">
@@ -256,16 +242,14 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
           </header>
 
           <section className="pb-6">
-            {/* Progress Bar */}
             <div className="px-4 mt-4 mb-8">
               <p className="text-base leading-6 font-semibold text-slate-900 mb-4">Progreso</p>
               <ProgressBar progress={progress} />
             </div>
 
-            <div className="bg-white border border-[#F1F5F9] rounded-[48px] px-4 pt-3.75 pb-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+            <div className="bg-white border-2 border-[#E2E8F0] rounded-3xl px-4 pt-3.75 pb-4 shadow-md">
               <h1 className="text-[30px] leading-9.5 font-bold text-slate-900">¿Cuál es el Procesador?</h1>
               <p className="text-base leading-6 font-normal text-slate-500">Haz clic en la pieza correcta.</p>
-
             </div>
           </section>
 
@@ -277,8 +261,8 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
                     onClick={() => handleOptionClick(option)}
                     disabled={isProcessing}
                     className={`
-                      relative bg-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-500 
-                      hover:-translate-y-4 hover:shadow-2xl active:scale-95 border-2 w-full
+                      relative bg-white rounded-3xl p-6 shadow-md hover:shadow-lg transition-all duration-500 
+                      hover:-translate-y-4 hover:shadow-xl active:scale-95 border-2 w-full
                       ${selectedOption === option.id 
                         ? option.correct 
                           ? 'border-green-500 ring-4 ring-green-200' 
@@ -291,7 +275,7 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
                       }
                     `}
                   >
-                    <div className="w-60 h-60 bg-[#F8FAFC] border border-[#F1F5F9] rounded-2xl flex items-center justify-center mb-4 mx-auto">
+                    <div className="w-60 h-60 bg-white rounded-3xl flex items-center justify-center mb-4 mx-auto">
                       <img 
                         src={option.image} 
                         alt="Componente de computadora"
@@ -302,7 +286,6 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
                       />
                     </div>
                     
-                    {/* Success/Error Indicator */}
                     {selectedOption === option.id && (
                       <div className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center">
                         {option.correct ? (
@@ -326,10 +309,9 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
             </div>
           </section>
 
-          {/* Mascot Feedback Section */}
           {feedbackMessage && (
             <section ref={feedbackRef} className="pb-6">
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl shadow-lg px-6 py-5">
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-3xl shadow-lg px-6 py-5">
                 <div className="flex items-center gap-6">
                   <img 
                     src={selectedOption === 'processor' ? '/src/assets/images/Mascota/Masombrado1.png' : '/src/assets/images/Mascota/Mpensando1.png'}
@@ -352,7 +334,7 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
           )}
 
           <section className="pb-8">
-            <div className="bg-white border border-[#F1F5F9] rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] px-6 py-5">
+            <div className="bg-white border-2 border-[#E2E8F0] rounded-3xl shadow-md px-6 py-5">
               <button
                 onClick={() => setIsHelpExpanded(!isHelpExpanded)}
                 className="w-full flex items-center gap-2 mb-4 text-left cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors duration-200"
@@ -369,7 +351,7 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
               </button>
 
               {isHelpExpanded && (
-                <div className="bg-blue-50 rounded-2xl">
+                <div className="bg-white rounded-3xl">
                   <p 
                     className="text-base text-[#475569] leading-6 whitespace-pre-line"
                     dangerouslySetInnerHTML={{ __html: helpTexts[currentRound - 1] }}
@@ -383,7 +365,7 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
             <button
               type="button"
               onClick={onBack}
-              className="h-14 min-w-60 max-w-120 rounded-full bg-[#0D7FF2] text-white px-8 flex items-center justify-center gap-3 cursor-pointer hover:bg-[#0D7FF2]/90 hover:shadow-lg hover:scale-105 transition-all duration-200 font-bold text-lg"
+              className="h-14 min-w-60 max-w-120 rounded-3xl bg-[#0D7FF2] text-white px-8 flex items-center justify-center gap-3 cursor-pointer hover:bg-[#0D7FF2]/90 hover:shadow-lg hover:scale-105 transition-all duration-200 font-bold text-lg"
             >
               <span className="text-[22px]">←</span>
               <span>Volver al Módulo Piezas</span>

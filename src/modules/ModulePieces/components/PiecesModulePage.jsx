@@ -1,15 +1,14 @@
-import ComponentsIcon from "./ComponentsIcon";
-import LockIcon from "./LockIcon";
-import BrainIcon from "./BrainIcon";
-import MemoryIcon from "./MemoryIcon";
-import HeartIcon from "./HeartIcon";
-import StorageIcon from "./StorageIcon";
-import { getUserProgress, updateProgress } from "../services/firestoreService";
-import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getLevelConfig } from "../services/levelUtils";
-import { MODULE_INFO } from "../services/constants/levels";
+import ComponentsIcon from "./icons/ComponentsIcon";
+import LockIcon from "../../../components/LockIcon";
+import BrainIcon from "./icons/BrainIcon";
+import MemoryIcon from "./icons/MemoryIcon";
+import HeartIcon from "./icons/HeartIcon";
+import StorageIcon from "./icons/StorageIcon";
+import { getUserProgress, updateProgress } from "../../../shared/services";
+import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getLevelConfig, MODULE_INFO } from "../services";
 import { useState, useEffect } from "react";
-import UserProfileButton from "../shared/components/UserProfileButton";
-import ProgressBar from "../shared/components/ProgressBar";
+import UserProfileButton from "../../../shared/components/UserProfileButton";
+import ProgressBar from "../../../shared/components/ProgressBar";
 import Level1Brain from "./levels/Level1Brain";
 
 function LevelCard({
@@ -28,14 +27,14 @@ function LevelCard({
     return (
       <article
         onClick={onClick}
-        className={`relative bg-white border-4 border-[#0D7FF2] rounded-[48px] p-4.25 pb-10 shadow-[0_0_0_4px_rgba(13,127,242,0.2),0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] transition-all duration-500 shadow-sm group cursor-pointer hover:-translate-y-4 hover:shadow-2xl active:scale-95`}
+        className={`relative bg-white border-4 border-[#0D7FF2] rounded-3xl p-4.25 pb-10 shadow-lg transition-all duration-500 group cursor-pointer hover:-translate-y-4 hover:shadow-xl active:scale-95`}
       >
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0D7FF2] text-white text-[10px] font-bold tracking-[1px] uppercase rounded-full px-4 py-1 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)]">
           Actual
         </span>
 
         <div
-          className={`h-56 rounded-4xl flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 bg-[#0D7FF2]/10`}
+          className={`h-56 rounded-3xl flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:scale-110 bg-[#0D7FF2]/10`}
         >
           <CardIcon className="w-18 h-21.5" color="#0D7FF2" />
         </div>
@@ -52,14 +51,14 @@ function LevelCard({
   return (
     <article
       onClick={onClick}
-      className={`relative rounded-[48px] p-4 pb-10 transition-all duration-500 shadow-sm group ${
+      className={`relative rounded-3xl p-4 pb-10 transition-all duration-500 shadow-sm group ${
         isLocked
-          ? "bg-white/80 border border-[#E2E8F0] opacity-75 cursor-not-allowed"
-          : "bg-white border-2 border-[#0D7FF2] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] cursor-pointer hover:-translate-y-4 hover:shadow-2xl active:scale-95"
+          ? "bg-white/80 border-2 border-[#CBD5E1] opacity-75 cursor-not-allowed"
+          : "bg-white border-2 border-[#0D7FF2] shadow-md cursor-pointer hover:-translate-y-4 hover:shadow-lg active:scale-95"
       }`}
     >
       <div
-        className={`h-56 rounded-4xl flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 ${
+        className={`h-56 rounded-3xl flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:scale-110 ${
           isLocked ? "bg-[#E2E8F0]" : "bg-[#0D7FF2]/10"
         }`}
       >
@@ -161,13 +160,13 @@ export default function PiecesModulePage({ user, onBack }) {
 
   if (loading) {
     return (
-      <div className="min-h-300 bg-[#F5F7F8] flex items-center justify-center">
+      <div className="min-h-300 bg-white flex items-center justify-center">
         <div className="text-lg font-medium text-slate-600">Cargando progreso...</div>
       </div>
     );
   }
   return (
-    <div className="min-h-300 bg-[#F5F7F8] flex flex-col">
+    <div className="min-h-300 bg-white flex flex-col">
       <div className="w-full min-h-300 overflow-y-auto flex justify-center px-6 lg:px-1 xl:px-4 py-5">
         <div className="w-full max-w-360 min-h-288">
           <header className="pb-6">
@@ -193,7 +192,7 @@ export default function PiecesModulePage({ user, onBack }) {
               <ProgressBar progress={userProgress ? getProgressPercentage(userProgress) : 0} />
             </div>
 
-            <div className="bg-white border border-[#F1F5F9] rounded-[48px] px-4 pt-3.75 pb-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+            <div className="bg-white border-2 border-[#E2E8F0] rounded-3xl px-4 pt-3.75 pb-4 shadow-md">
               <h1 className="text-[30px] leading-9.5 font-bold text-slate-900">{MODULE_INFO.name}</h1>
               <p className="text-base leading-6 font-normal text-slate-500">{MODULE_INFO.description}</p>
             </div>
@@ -230,7 +229,7 @@ export default function PiecesModulePage({ user, onBack }) {
             <button
               type="button"
               onClick={onBack}
-              className="h-14 min-w-60 max-w-120 rounded-full bg-[#0D7FF2] text-white px-8 flex items-center justify-center gap-3 cursor-pointer hover:bg-[#0D7FF2]/90 hover:shadow-lg hover:scale-105 transition-all duration-200 font-bold text-lg"
+              className="h-14 min-w-60 max-w-120 rounded-3xl bg-[#0D7FF2] text-white px-8 flex items-center justify-center gap-3 cursor-pointer hover:bg-[#0D7FF2]/90 hover:shadow-lg hover:scale-105 transition-all duration-200 font-bold text-lg"
             >
               <span className="text-[22px]">←</span>
               <span>Volver al Menú Principal</span>

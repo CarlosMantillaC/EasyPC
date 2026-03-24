@@ -9,7 +9,7 @@ import "./App.css";
 import { auth } from "./firebase";
 import LoginPage from "./components/LoginPage";
 import HomePage from "./components/HomePage";
-import PiecesModulePage from "./components/PiecesModulePage";
+import { PiecesModulePage } from "./modules/ModulePieces";
 import Layout from "./shared/components/Layout";
 
 function App() {

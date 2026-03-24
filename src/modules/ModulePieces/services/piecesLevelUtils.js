@@ -1,4 +1,4 @@
-import { PIECES_LEVELS, MODULE_INFO, PROGRESS_MESSAGES } from './constants/levels';
+import { PIECES_LEVELS, MODULE_INFO, PROGRESS_MESSAGES } from './piecesConstants';
 
 /**
  * Determina el estado de un nivel según el progreso del usuario
