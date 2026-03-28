@@ -118,6 +118,14 @@ export default function PiecesModulePage({ user, onBack }) {
         setUserProgress(progress);
       } catch (error) {
         console.error("Error cargando progreso:", error);
+        // Fallback básico para permitir jugar nivel 1 si falla Firestore
+        setUserProgress({
+          userId: user.uid,
+          currentLevel: 1,
+          completedLevels: [],
+          unlockedLevels: [1],
+          totalScore: 0
+        });
       } finally {
         setLoading(false);
       }
@@ -136,26 +144,59 @@ export default function PiecesModulePage({ user, onBack }) {
       setCurrentLevel(null); // Volver a la vista de niveles después de completar
     } catch (error) {
       console.error("Error actualizando progreso:", error);
+      // Actualizar estado local incluso si falla Firebase
+      setUserProgress(prev => {
+        if (!prev) return prev;
+        const newCompleted = [...new Set([...prev.completedLevels, levelNumber])];
+        return {
+          ...prev,
+          completedLevels: newCompleted,
+          currentLevel: Math.max(prev.currentLevel, levelNumber + 1),
+          unlockedLevels: [...new Set([...prev.unlockedLevels, levelNumber + 1])]
+        };
+      });
+      setCurrentLevel(null);
     }
   };
 
   // Función para manejar el clic en una tarjeta de nivel
   const handleLevelClick = (levelNumber) => {
     const levelStatus = getLevelStatus(levelNumber, userProgress);
-    if (levelStatus.active || levelStatus.completed) {
+    console.log(`Intentando iniciar nivel ${levelNumber}. Estado actual:`, levelStatus);
+    console.log("Progreso del usuario:", userProgress);
+    
+    // Permitir jugar si está activo, completado o simplemente desbloqueado
+    if (levelStatus.active || levelStatus.completed || levelStatus.variant === "unlocked") {
+      console.log(`Iniciando nivel ${levelNumber}...`);
       setCurrentLevel(levelNumber);
+    } else {
+      console.log(`El nivel ${levelNumber} está bloqueado y no puede iniciarse.`);
+    }
+  };
+
+  // Renderizado dinámico de niveles
+  const renderLevel = () => {
+    switch (currentLevel) {
+      case 1:
+        return (
+          <Level1Brain 
+            user={user}
+            onBack={() => setCurrentLevel(null)}
+            onLevelComplete={handleLevelComplete}
+          />
+        );
+      // Aquí se pueden añadir más niveles conforme se desarrollen
+      default:
+        return null;
     }
   };
 
   // Si hay un nivel activo, mostrar el componente del nivel
-  if (currentLevel === 1) {
-    return (
-      <Level1Brain 
-        user={user}
-        onBack={() => setCurrentLevel(null)}
-        onLevelComplete={handleLevelComplete}
-      />
-    );
+  if (currentLevel !== null) {
+    const levelContent = renderLevel();
+    if (levelContent) return levelContent;
+    // Si el nivel no tiene componente todavía, volvemos a la lista
+    setCurrentLevel(null);
   }
 
   if (loading) {
