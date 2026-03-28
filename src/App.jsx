@@ -10,6 +10,7 @@ import { auth } from "./firebase";
 import LoginPage from "./components/LoginPage";
 import HomePage from "./components/HomePage";
 import { PiecesModulePage } from "./modules/ModulePieces";
+import { AssemblyModulePage } from "./modules/ModuleAssembly";
 import Layout from "./shared/components/Layout";
 
 function App() {
@@ -97,21 +98,32 @@ function App() {
     );
   }
 
+  const renderContent = () => {
+    if (!user) return <LoginPage onLogin={handleGoogleLogin} status={status} />;
+
+    switch (currentView) {
+      case "pieces":
+        return <PiecesModulePage user={user} onBack={() => setCurrentView("home")} />;
+      case "assembly":
+        return <AssemblyModulePage user={user} onBack={() => setCurrentView("home")} />;
+      default:
+        return (
+          <HomePage 
+            user={user} 
+            onOpenPieces={() => setCurrentView("pieces")} 
+            onOpenAssembly={() => setCurrentView("assembly")}
+          />
+        );
+    }
+  };
+
   return (
     <Layout
       user={user}
       onLogout={handleLogout}
-      showHeader={user ? currentView !== "pieces" : false}
+      showHeader={user ? currentView === "home" : false}
     >
-      {user ? (
-        currentView === "pieces" ? (
-          <PiecesModulePage user={user} onBack={() => setCurrentView("home")} />
-        ) : (
-          <HomePage user={user} onOpenPieces={() => setCurrentView("pieces")} />
-        )
-      ) : (
-        <LoginPage onLogin={handleGoogleLogin} status={status} />
-      )}
+      {renderContent()}
     </Layout>
   );
 }
