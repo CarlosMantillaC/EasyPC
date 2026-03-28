@@ -4,7 +4,7 @@ import CleaningIcon from "./CleaningIcon";
 import ComponentsIcon from "./ComponentsIcon";
 import AssemblyIcon from "./AssemblyIcon";
 
-export default function HomePage({ user, onOpenPieces }) {
+export default function HomePage({ user, onOpenPieces, onOpenAssembly }) {
   const primerNombre = user?.displayName?.split(' ')[0] || 'Explorador';
 
   return (
@@ -32,12 +32,12 @@ export default function HomePage({ user, onOpenPieces }) {
           <LearningCard
             title="Armado"
             description="¡Construye la PC de tus sueños desde cero!"
-            borderColor="#FF6B6B"
-            softColor="rgba(255, 107, 107, 0.2)"
-            buttonColor="#FF6B6B"
+            borderColor="#FFB800"
+            softColor="rgba(255, 184, 0, 0.2)"
+            buttonColor="#FFB800"
             buttonLabel="¡A armar!"
             icon={AssemblyIcon}
-            locked
+            onClick={onOpenAssembly}
           />
 
           <LearningCard
