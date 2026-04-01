@@ -16,13 +16,16 @@ const MOODS = {
   reparando: Mreparando
 };
 
-export default function MascotaDialogo({ titulo, mensaje, mood = "hablando", reverse = false }) {
+export default function MascotaDialogo({ titulo, mensaje, mood = "hablando", reverse = false, align = "center" }) {
   const selectedImage = MOODS[mood] || MOODS.hablando;
+  const containerClassName = align === "left"
+    ? `flex ${reverse ? 'flex-row-reverse' : 'flex-row'} items-center gap-6 mb-8 w-full`
+    : `flex ${reverse ? 'flex-row-reverse' : 'flex-row'} items-center gap-6 mb-8 w-full max-w-5xl mx-auto`;
 
   return (
-    <section className={`flex flex-col ${reverse ? 'flex-row-reverse' : 'flex-row'} items-center gap-6 mb-8 w-full max-w-5xl mx-auto`}>
+    <section className={containerClassName}>
       <div className="relative group shrink-0">
-        <div className="w-32 h-32 md:w-44 md:h-44 transition-transform duration-500 hover:scale-110">
+        <div className="w-24 h-24 md:w-32 md:h-32 transition-transform duration-500 hover:scale-110">
           <img 
             src={selectedImage} 
             alt={`Isaac está ${mood}`} 
@@ -37,16 +40,16 @@ export default function MascotaDialogo({ titulo, mensaje, mood = "hablando", rev
 
       <div className="relative flex-1 w-full animate-in slide-in-from-bottom-4 duration-500">
         {/* Globo de texto (Speech Bubble) */}
-        <div className="bg-white border-2 border-[#0D7FF2]/10 rounded-[40px] p-6 md:p-8 shadow-xl shadow-[#0D7FF2]/5 relative">
+        <div className="bg-white border-2 border-[#E2E8F0] rounded-3xl p-4 md:p-6 shadow-md relative">
           {/* Triángulo del globo (colita) adaptable */}
-          <div className={`absolute ${reverse ? 'right-[-10px]' : 'left-[-10px]'} top-1/2 -translate-y-1/2 w-5 h-5 bg-white border-l-2 border-b-2 border-[#0D7FF2]/10 rotate-45 hidden md:block ${reverse ? 'rotate-[225deg]' : 'rotate-45'}`}></div>
+          <div className={`absolute ${reverse ? 'right-[-10px]' : 'left-[-10px]'} top-1/2 -translate-y-1/2 w-5 h-5 bg-white border-l-2 border-b-2 border-[#E2E8F0] rotate-45 hidden md:block ${reverse ? 'rotate-[225deg]' : 'rotate-45'}`}></div>
           
           {titulo && (
-            <h1 className="text-2xl md:text-3xl leading-tight font-black tracking-[-0.5px] text-slate-900 mb-2">
+            <h1 className="text-xl md:text-2xl leading-tight font-black tracking-[-0.5px] text-slate-900 mb-2">
               {titulo}
             </h1>
           )}
-          <p className="text-lg md:text-xl leading-relaxed font-semibold text-slate-500">
+          <p className="text-base md:text-lg leading-relaxed font-semibold text-slate-500">
             {mensaje}
           </p>
         </div>

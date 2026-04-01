@@ -19,19 +19,19 @@ export default function HomePage({ user, onOpenPieces, onOpenAssembly }) {
       <section className="flex justify-center">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 mb-16 max-w-6xl">
           <LearningCard
-            title="Piezas"
-            description="Descubre qué hay dentro de la caja mágica."
+            title="Componentes"
+            description="¡Descubre las partes del computador!"
             borderColor="#6BCB77"
             softColor="rgba(107, 203, 119, 0.2)"
             buttonColor="#6BCB77"
-            buttonLabel="Explorar"
+            buttonLabel="¡A explorar!"
             icon={ComponentsIcon}
             onClick={onOpenPieces}
           />
 
           <LearningCard
             title="Armado"
-            description="¡Construye la PC de tus sueños desde cero!"
+            description="¡Arma un computador paso a paso!"
             borderColor="#FFB800"
             softColor="rgba(255, 184, 0, 0.2)"
             buttonColor="#FFB800"
@@ -42,7 +42,7 @@ export default function HomePage({ user, onOpenPieces, onOpenAssembly }) {
 
           <LearningCard
             title="Limpieza"
-            description="¡Quita el polvo y haz que tu PC vuele!"
+            description="¡Limpia el computador correctamente!"
             borderColor="#FFD93D"
             softColor="rgba(255, 217, 61, 0.2)"
             buttonColor="#FFD93D"

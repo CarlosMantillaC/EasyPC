@@ -4,8 +4,9 @@ import BrainIcon from "./icons/BrainIcon";
 import MemoryIcon from "./icons/MemoryIcon";
 import HeartIcon from "./icons/HeartIcon";
 import StorageIcon from "./icons/StorageIcon";
+import TrophyIcon from "../../../shared/components/TrophyIcon";
 import { getUserProgress, updateProgress } from "../../../shared/services";
-import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getLevelConfig, MODULE_INFO } from "../services";
+import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getLevelConfig, MODULE_INFO, PROGRESS_MESSAGES } from "../services";
 import { useState, useEffect } from "react";
 import UserProfileButton from "../../../shared/components/UserProfileButton";
 import ProgressBar from "../../../shared/components/ProgressBar";
@@ -211,10 +212,14 @@ export default function PiecesModulePage({ user, onBack }) {
       <div className="w-full min-h-300 overflow-y-auto flex justify-center px-6 lg:px-1 xl:px-4 py-5">
         <div className="w-full max-w-360 min-h-288">
           <header className="pb-6">
-            <div className="h-18.25 px-4 py-3.5 flex items-center justify-between">
+            <div className="px-4 py-3.5 flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
                 <ComponentsIcon className="w-9 h-11" color="#0D7FF2" />
-                <h2 className="text-2xl leading-7.5 tracking-[-0.6px] font-bold text-slate-900">Piezas</h2>
+                <div className="flex flex-col">
+                  <h2 className="text-2xl leading-7.5 tracking-[-0.6px] font-bold text-slate-900">Componentes</h2>
+                  <p className="text-sm leading-5 text-slate-600">¡Descubre las partes del computador!</p>
+                </div>
+                
               </div>
               <div className="flex items-center gap-4">
                 <UserProfileButton 
@@ -229,13 +234,23 @@ export default function PiecesModulePage({ user, onBack }) {
 
           <section className="pb-6">
             <div className="px-4 mt-4 mb-8">
-              <p className="text-base leading-6 font-semibold text-slate-900 mb-4">Progreso</p>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <TrophyIcon width={16} height={16} color="#0D7FF2" />
+                  <p className="text-base leading-6 font-semibold text-slate-900">Progreso</p>
+                </div>
+                {userProgress && (
+                  <p className="text-base leading-6 font-semibold text-blue-600">
+                    {(() => {
+                      const progressPercentage = getProgressPercentage(userProgress);
+                      if (progressPercentage === 0) return PROGRESS_MESSAGES.start;
+                      if (progressPercentage === 100) return PROGRESS_MESSAGES.complete;
+                      return PROGRESS_MESSAGES.default;
+                    })()}
+                  </p>
+                )}
+              </div>
               <ProgressBar progress={userProgress ? getProgressPercentage(userProgress) : 0} />
-            </div>
-
-            <div className="bg-white border-2 border-[#E2E8F0] rounded-3xl px-4 pt-3.75 pb-4 shadow-md">
-              <h1 className="text-[30px] leading-9.5 font-bold text-slate-900">{MODULE_INFO.name}</h1>
-              <p className="text-base leading-6 font-normal text-slate-500">{MODULE_INFO.description}</p>
             </div>
           </section>
 

@@ -5,58 +5,58 @@
 export const PIECES_LEVELS = {
   1: {
     id: 1,
-    title: "El Cerebro",
+    title: "El Procesador",
     subtitle: {
       locked: "Bloqueado",
       active: "¡Juega ahora!",
       completed: "¡Completado!"
     },
-    description: "Aprende sobre el procesador, el cerebro de la computadora",
+    description: "Es el cerebro del computador",
     icon: "BrainIcon"
   },
   2: {
     id: 2,
-    title: "La Memoria",
+    title: "La Memoria RAM",
     subtitle: {
       locked: "Bloqueado",
       active: "¡Juega ahora!",
       completed: "¡Completado!"
     },
-    description: "Descubre cómo funciona la memoria RAM",
+    description: "Guarda datos mientras usas el computador",
     icon: "MemoryIcon"
   },
   3: {
     id: 3,
-    title: "El Corazón",
+    title: "La Fuente de Poder",
     subtitle: {
       locked: "Bloqueado",
       active: "¡Juega ahora!",
       completed: "¡Completado!"
     },
-    description: "Conoce la fuente de poder, el corazón del sistema",
+    description: "Da energía al computador",
     icon: "HeartIcon"
   },
   4: {
     id: 4,
-    title: "El Almacén",
+    title: "El Disco Duro",
     subtitle: {
       locked: "Bloqueado",
       active: "¡Juega ahora!",
       completed: "¡Completado!"
     },
-    description: "Explora el almacenamiento de datos",
+    description: "Guarda la información",
     icon: "StorageIcon"
   }
 };
 
 export const MODULE_INFO = {
-  name: "Piezas",
+  name: "Componentes",
   totalLevels: 4,
-  description: "Explora los componentes de tu computadora y conviértete en un experto!"
+  description: "Aprende las partes del computador"
 };
 
 export const PROGRESS_MESSAGES = {
-  0: "¡Comienza tu primera aventura!",
-  4: "¡Felicidades, completaste todo!",
-  default: "¡Sigue así, vas por buen camino!"
+  start: "¡Vamos a empezar!",
+  complete: "¡Completaste todo!",
+  default: "¡Vas bien!"
 };

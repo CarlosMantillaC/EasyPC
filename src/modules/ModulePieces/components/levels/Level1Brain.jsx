@@ -2,7 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import UserProfileButton from '../../../../shared/components/UserProfileButton';
 import StarRating from '../../../../shared/components/StarRating';
 import ProgressBar from '../../../../shared/components/ProgressBar';
+import TrophyIcon from '../../../../shared/components/TrophyIcon';
 import BrainIcon from "../icons/BrainIcon.jsx";
+import MascotaDialogo from '../../../../components/MascotaDialogo';
+import { PROGRESS_MESSAGES } from '../../services/piecesConstants';
 
 const NON_PROCESSOR_CARDS = ['ram', 'power'];
 
@@ -223,11 +226,14 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
     <div className="min-h-300 bg-white flex flex-col">
       <div className="w-full min-h-300 overflow-y-auto flex justify-center px-6 lg:px-1 xl:px-4 py-5">
         <div className="w-full max-w-360 min-h-288">
-          <header className="pb-6">
+          <header>
             <div className="h-18.25 px-4 py-3.5 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <BrainIcon className="w-9 h-11" color="#0D7FF2" />
-                <h2 className="text-2xl leading-7.5 tracking-[-0.6px] font-bold text-slate-900">El Cerebro</h2>
+                <div className="flex flex-col">
+                  <h2 className="text-2xl leading-7.5 tracking-[-0.6px] font-bold text-slate-900">El Procesador</h2>
+                  <p className="text-sm leading-5 text-slate-600">¡Es el cerebro del computador!</p>
+                </div>
               </div>
               <div className="flex items-center gap-4">
                 <StarRating user={user} levelNumber={1} />
@@ -241,16 +247,30 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
             </div>
           </header>
 
-          <section className="pb-6">
-            <div className="px-4 mt-4 mb-8">
-              <p className="text-base leading-6 font-semibold text-slate-900 mb-4">Progreso</p>
+          <section>
+            <div className="px-4 mt-16 mb-16">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <TrophyIcon width={16} height={16} color="#0D7FF2" />
+                  <p className="text-base leading-6 font-semibold text-slate-900">Progreso</p>
+                </div>
+                <p className="text-base leading-6 font-semibold text-blue-600">
+                  {(() => {
+                    if (progress === 0) return PROGRESS_MESSAGES.start;
+                    if (progress === 100) return PROGRESS_MESSAGES.complete;
+                    return PROGRESS_MESSAGES.default;
+                  })()}
+                </p>
+              </div>
               <ProgressBar progress={progress} />
             </div>
 
-            <div className="bg-white border-2 border-[#E2E8F0] rounded-3xl px-4 pt-3.75 pb-4 shadow-md">
-              <h1 className="text-[30px] leading-9.5 font-bold text-slate-900">¿Cuál es el Procesador?</h1>
-              <p className="text-base leading-6 font-normal text-slate-500">Haz clic en la pieza correcta.</p>
-            </div>
+            <MascotaDialogo
+              titulo="¿Cuál es el Procesador?"
+              mensaje="Haz clic en la pieza correcta."
+              mood="hablando"
+              align="left"
+            />
           </section>
 
           <section className="pb-8">
@@ -311,25 +331,12 @@ export default function Level1Brain({ onBack, onLevelComplete, user }) {
 
           {feedbackMessage && (
             <section ref={feedbackRef} className="pb-6">
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-3xl shadow-lg px-6 py-5">
-                <div className="flex items-center gap-6">
-                  <img 
-                    src={selectedOption === 'processor' ? '/src/assets/images/Mascota/Masombrado1.png' : '/src/assets/images/Mascota/Mpensando1.png'}
-                    alt="Mascota"
-                    className="w-24 h-24 object-contain"
-                  />
-                  <div>
-                    <p className="text-xl font-bold text-slate-900">
-                      {feedbackMessage}
-                    </p>
-                    {currentRound === 5 && selectedOption === 'processor' && (
-                      <p className="text-lg font-semibold text-blue-600">
-                        +10 estrellas
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <MascotaDialogo
+                titulo={feedbackMessage}
+                mensaje={currentRound === 5 && selectedOption === 'processor' ? '+10 estrellas' : ''}
+                mood={selectedOption === 'processor' ? 'asombrado' : 'pensando'}
+                align="left"
+              />
             </section>
           )}
 
