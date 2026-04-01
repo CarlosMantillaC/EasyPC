@@ -4,15 +4,36 @@ import CleaningIcon from "./CleaningIcon";
 import ComponentsIcon from "./ComponentsIcon";
 import AssemblyIcon from "./AssemblyIcon";
 
+export const DAILY_MESSAGES = [
+  "Un computador tiene varias partes que trabajan juntas.",
+  "Cada parte del computador tiene una función.",
+  "El computador necesita energía para funcionar.",
+  "Armar bien un computador es importante.",
+  "Mantener limpio el computador ayuda a que funcione mejor.",
+  "Las piezas del computador deben cuidarse.",
+  "Un computador limpio dura más tiempo.",
+  "Seguir pasos ayuda a hacer las cosas bien.",
+  "Aprender sobre computadores es útil.",
+  "Puedes aprender paso a paso."
+];
+
+const getDailyMessage = () => {
+  const today = new Date();
+  const dayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const dayNumber = Math.floor(dayStart.getTime() / 86400000);
+  return DAILY_MESSAGES[dayNumber % DAILY_MESSAGES.length];
+};
+
 export default function HomePage({ user, onOpenPieces, onOpenAssembly }) {
   const primerNombre = user?.displayName?.split(' ')[0] || 'Explorador';
+  const dailyMessage = getDailyMessage();
 
   return (
     <div className="pb-20">
       {/* MASCOTA CON DIÁLOGO */}
       <MascotaDialogo 
         titulo={`¡Hola, ${primerNombre}!`}
-        mensaje="¿Sabías que el primer procesador del mundo era del tamaño de una uña? ¡Hoy vamos a aprender más secretos!"
+        mensaje={dailyMessage}
       />
 
       {/* GRID PRINCIPAL DE APRENDIZAJE */}
