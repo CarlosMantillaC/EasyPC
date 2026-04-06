@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AssemblyIcon from "../../../components/AssemblyIcon";
 import CpuIcon from "../../../components/CpuIcon";
 import MemoryIcon from "../../ModulePieces/components/icons/MemoryIcon";
@@ -8,15 +8,31 @@ import UserProfileButton from "../../../shared/components/UserProfileButton";
 import ProgressBar from "../../../shared/components/ProgressBar";
 import LockIcon from "../../../components/LockIcon";
 import { getUserProgress, updateProgress } from "../../../shared/services";
-import { getLevelStatus, getLevelSubtitle, getProgressPercentage, getLevelConfig, MODULE_INFO } from "../services";
+import { getLevelStatus, getLevelSubtitle, getLevelConfig, MODULE_INFO } from "../services";
 
-// Importar todos los niveles
+// Importar niveles
 import Level1Motherboard from "./levels/Level1Motherboard";
 import Level2Ram from "./levels/Level2Ram";
 import Level3Storage from "./levels/Level3Storage";
 import Level4Full from "./levels/Level4Full";
 import Level5Chasis from "./levels/Level5Chasis";
 
+import SuccessModal from "./SuccessModal";
+import Mhablando from "../../../assets/images/Mascota/Mhablando.png";
+import Mdurmiendo from "../../../assets/images/Mascota/Mdurmiendo.png";
+import MbienHecho from "../../../assets/images/Mascota/MbienHecho.png";
+import Mreparando from "../../../assets/images/Mascota/Mreparando.png";
+
+// Herramientas decorativas
+import Destornillador from "../../../assets/images/KitMaterials/Destornillador.png";
+import PastaTermica from "../../../assets/images/KitMaterials/PastaTermica.png";
+import Cepillo from "../../../assets/images/KitMaterials/Cepillo.png";
+import LimpiaContacto from "../../../assets/images/KitMaterials/LimpiaContacto.png";
+
+
+/**
+ * COMPONENTE DE TARJETA ESTILO CARPETA TÉCNICA (LIMPIO / SISTEMA ORIGINAL)
+ */
 function LevelCard({
   title,
   subtitle,
@@ -25,28 +41,22 @@ function LevelCard({
   active = false,
   completed = false,
   onClick,
+  levelNumber
 }) {
   const isLocked = variant === "locked";
 
-  if (active) {
+  if (isLocked) {
     return (
-      <article
-        onClick={onClick}
-        className={`relative bg-white border-4 border-[#0D7FF2] rounded-3xl p-4.25 pb-10 shadow-lg transition-all duration-500 group cursor-pointer hover:-translate-y-4 hover:shadow-xl active:scale-95`}
-      >
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0D7FF2] text-white text-[10px] font-bold tracking-[1px] uppercase rounded-full px-4 py-1 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)]">
-          Actual
-        </span>
-
-        <div
-          className={`h-56 rounded-3xl flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:scale-110 bg-[#0D7FF2]/10`}
-        >
-          <CardIcon className="w-18 h-21.5" color="#0D7FF2" />
+      <article className="relative bg-white/80 border-2 border-slate-200 rounded-[24px] p-4 opacity-60 cursor-not-allowed shadow-sm grayscale">
+        <div className="h-48 rounded-[20px] flex items-center justify-center relative overflow-hidden bg-slate-50 border border-slate-100">
+          <CardIcon className="w-16 h-16 opacity-20" color="#94A3B8" />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/5">
+            <LockIcon className="w-8 h-10" color="#475569" />
+          </div>
         </div>
-
-        <div className="mt-3 space-y-1">
-          <h3 className="text-[18px] leading-7 font-bold text-slate-900">{title}</h3>
-          <p className="text-sm leading-5 text-[#0D7FF2] uppercase tracking-[0.7px] font-semibold">{subtitle}</p>
+        <div className="mt-4 space-y-1">
+          <h3 className="text-lg font-bold text-slate-400 uppercase tracking-tight">{title}</h3>
+          <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{subtitle}</p>
         </div>
       </article>
     );
@@ -55,49 +65,64 @@ function LevelCard({
   return (
     <article
       onClick={onClick}
-      className={`relative rounded-3xl p-4 pb-10 transition-all duration-500 shadow-sm group ${
-        isLocked
-          ? "bg-white/80 border-2 border-[#CBD5E1] opacity-75 cursor-not-allowed"
-          : "bg-white border-2 border-[#0D7FF2] shadow-md cursor-pointer hover:-translate-y-4 hover:shadow-lg active:scale-95"
-      }`}
+      className={`relative rounded-[24px] p-4 transition-all duration-300 group cursor-pointer border-4 bg-white
+        ${active 
+          ? 'border-[#0D7FF2] shadow-2xl shadow-blue-100 -translate-y-3' 
+          : 'border-slate-100 hover:border-[#0D7FF2]/40 hover:-translate-y-2 hover:shadow-xl active:scale-95'
+        }
+      `}
     >
-      <div
-        className={`h-56 rounded-3xl flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:scale-110 ${
-          isLocked ? "bg-[#E2E8F0]" : "bg-[#0D7FF2]/10"
-        }`}
-      >
-        {isLocked ? (
-          <CardIcon className="w-18 h-21.5" color="#94A3B8" />
-        ) : (
-          <CardIcon className="w-18 h-21.5" color="#0D7FF2" />
-        )}
-
-        {isLocked ? (
-          <div className="absolute inset-0 bg-black/5 flex items-center justify-center">
-            <LockIcon className="w-9 h-11" color="#475569" />
-          </div>
-        ) : null}
-
-        {completed ? (
-          <div className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center">
-            <div className="w-full h-full bg-green-500 rounded-full flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-            </div>
-          </div>
-        ) : null}
+      {/* Pestaña de carpeta (Folder Tab) */}
+      <div className={`absolute -top-3 left-6 h-6 px-4 rounded-t-lg flex items-center justify-center text-[10px] font-black uppercase tracking-[1px] transition-colors
+        ${active ? 'bg-[#0D7FF2] text-white' : 'bg-slate-200 text-slate-500 group-hover:bg-[#0D7FF2]/20 group-hover:text-[#0D7FF2]'}
+      `}>
+        Misión 0{levelNumber}
       </div>
 
-      <div className="mt-3 space-y-1">
-        <h3 className={`text-[18px] leading-7 font-bold ${isLocked ? "text-slate-500" : "text-slate-900"}`}>{title}</h3>
-        <p
-          className={`text-sm leading-5 ${
-            isLocked ? "text-slate-400 font-normal" : completed ? "text-[#0D7FF2] uppercase tracking-[0.7px] font-semibold" : "text-slate-600 font-medium"
-          }`}
-        >
-          {subtitle}
+      {/* Check de Completado */}
+      {completed && (
+        <div className="absolute -top-3 -right-3 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shadow-lg z-20 border-4 border-white">
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+      )}
+
+      {/* Contenedor de Icono */}
+      <div
+        className={`h-48 rounded-[20px] flex items-center justify-center relative overflow-hidden transition-all duration-500
+          ${active ? 'bg-blue-50' : completed ? 'bg-green-50' : 'bg-slate-50'}
+        `}
+      >
+        {/* Fondo de cuadrícula suave */}
+        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" 
+             style={{ backgroundImage: 'radial-gradient(#0D7FF2 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
+        
+        <CardIcon 
+          className={`w-20 h-20 transition-transform duration-500 group-hover:scale-110
+            ${active ? 'drop-shadow-md' : 'opacity-90'}
+          `} 
+          color={active ? "#0D7FF2" : completed ? "#22C55E" : "#0D7FF2"} 
+        />
+      </div>
+
+      {/* Textos del nivel */}
+      <div className="mt-4 space-y-1 text-center md:text-left">
+        <h3 className={`text-lg font-black tracking-tight leading-tight uppercase
+          ${active ? 'text-slate-900' : 'text-slate-700'}
+        `}>
+          {title}
+        </h3>
+        <p className={`text-[11px] font-black uppercase tracking-[1px]
+          ${completed ? 'text-green-500' : 'text-[#0D7FF2]'}
+        `}>
+          {subtitle === "¡Listo!" ? "¡LISTO PARA USAR!" : subtitle}
         </p>
+      </div>
+
+      {/* Detalles técnicos decorativos */}
+      <div className="absolute bottom-2 right-4 text-[8px] font-bold text-slate-300 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+        PC_SYS_0{levelNumber}
       </div>
     </article>
   );
@@ -107,6 +132,8 @@ export default function AssemblyModulePage({ user, onBack }) {
   const [userProgress, setUserProgress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentLevel, setCurrentLevel] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [completedLevelNumber, setCompletedLevelNumber] = useState(null);
 
   useEffect(() => {
     const loadUserProgress = async () => {
@@ -118,9 +145,9 @@ export default function AssemblyModulePage({ user, onBack }) {
         const progress = await getUserProgress(user.uid);
         setUserProgress(progress);
       } catch (error) {
-        console.error("Error cargando progreso en Armando:", error);
+        console.error("Error cargando progreso:", error);
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 2000);
       }
     };
     loadUserProgress();
@@ -131,119 +158,176 @@ export default function AssemblyModulePage({ user, onBack }) {
     try {
       const updatedProgress = await updateProgress(user.uid, `assembly_level_${levelNumber}`);
       setUserProgress(updatedProgress);
-      setCurrentLevel(null);
+      setCompletedLevelNumber(levelNumber);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error actualizando progreso:", error);
     }
   };
 
-  const handleLevelClick = (levelNumber) => {
-    const levelStatus = getLevelStatus(levelNumber, userProgress);
-    if (levelStatus.active || levelStatus.completed) {
-      setCurrentLevel(levelNumber);
+  const handleNextLevel = () => {
+    setShowSuccessModal(false);
+    const nextLevel = completedLevelNumber + 1;
+    if (nextLevel <= MODULE_INFO.totalLevels) {
+      setCurrentLevel(nextLevel);
+    } else {
+      setCurrentLevel(null);
     }
   };
-
-  const renderLevel = () => {
-    const props = { onBack: () => setCurrentLevel(null), onLevelComplete: () => handleLevelComplete(currentLevel) };
-    switch(currentLevel) {
-      case 1: return <Level1Motherboard {...props} />;
-      case 2: return <Level2Ram {...props} />;
-      case 3: return <Level3Storage {...props} />;
-      case 4: return <Level4Full {...props} />;
-      case 5: return <Level5Chasis {...props} />;
-      default: return null;
-    }
-  };
-
-  if (currentLevel) return renderLevel();
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-lg font-medium text-slate-600">Cargando progreso...</div>
+      <div className="min-h-screen bg-white flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03]" 
+             style={{ backgroundImage: 'linear-gradient(#0D7FF2 1px, transparent 1px), linear-gradient(90deg, #0D7FF2 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        
+        <div className="flex flex-col items-center gap-10 relative z-10">
+          <div className="relative">
+            <div className="absolute inset-0 bg-[#0D7FF2]/10 blur-[80px] rounded-full animate-pulse"></div>
+            <img src={Mdurmiendo} alt="Isaac" className="w-32 h-32 object-contain relative" />
+          </div>
+          <div className="space-y-3 text-center">
+            <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase italic">Abriendo el Taller...</h2>
+            <div className="flex justify-center gap-3">
+               <div className="w-3 h-3 bg-[#0D7FF2] rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+               <div className="w-3 h-3 bg-[#0D7FF2]/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+               <div className="w-3 h-3 bg-[#0D7FF2]/30 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
-  const getIconComponent = (iconName) => {
-    switch(iconName) {
-      case "CpuIcon": return CpuIcon;
-      case "MemoryIcon": return MemoryIcon;
-      case "StorageIcon": return StorageIcon;
-      default: return ComponentsIcon;
-    }
-  };
+  if (currentLevel) {
+    const props = { onBack: () => setCurrentLevel(null), onLevelComplete: () => handleLevelComplete(currentLevel) };
+    const levels = [null, <Level1Motherboard {...props} />, <Level2Ram {...props} />, <Level3Storage {...props} />, <Level4Full {...props} />, <Level5Chasis {...props} />];
+    
+    return (
+      <>
+        {levels[currentLevel]}
+        {showSuccessModal && (
+          <SuccessModal
+            levelName={getLevelConfig(completedLevelNumber).title}
+            onRepeat={() => { setShowSuccessModal(false); const c = currentLevel; setCurrentLevel(null); setTimeout(() => setCurrentLevel(c), 10); }}
+            onNext={handleNextLevel}
+            onBackToMenu={() => { setShowSuccessModal(false); setCurrentLevel(null); }}
+            isLastLevel={completedLevelNumber === MODULE_INFO.totalLevels}
+          />
+        )}
+      </>
+    );
+  }
+
+  const icons = { CpuIcon, MemoryIcon, StorageIcon, ComponentsIcon };
+  const completedCount = userProgress?.completedLevels?.filter(l => typeof l === 'string' && l.startsWith('assembly_level_')).length || 0;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <div className="w-full min-h-screen overflow-y-auto flex justify-center px-6 lg:px-1 xl:px-4 py-5">
-        <div className="w-full max-w-360 min-h-288">
-          <header className="pb-6">
-            <div className="h-18.25 px-4 py-3.5 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <AssemblyIcon className="w-9 h-11" color="#0D7FF2" />
-                <h2 className="text-2xl leading-7.5 tracking-[-0.6px] font-bold text-slate-900">Armando</h2>
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col text-slate-900 font-sans relative overflow-hidden">
+      
+      {/* TEXTURAS DE FONDO SUAVES */}
+      <div className="absolute inset-0 opacity-[0.4] pointer-events-none" 
+           style={{ backgroundImage: 'radial-gradient(#CBD5E1 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+      
+      {/* HERRAMIENTAS DECORATIVAS (Sutiles en colores originales) */}
+      <img src={Destornillador} alt="" className="absolute -top-10 -right-10 w-64 opacity-10 rotate-45 pointer-events-none grayscale hover:grayscale-0 transition-all duration-700" />
+      <img src={PastaTermica} alt="" className="absolute top-1/2 -left-20 w-48 opacity-10 -rotate-12 pointer-events-none grayscale" />
+      <img src={Cepillo} alt="" className="absolute -bottom-10 right-20 w-56 opacity-10 rotate-[120deg] pointer-events-none grayscale" />
+
+      <div className="w-full max-w-7xl mx-auto px-6 py-8 flex flex-col flex-1 relative z-10">
+        
+        {/* CABECERA LIMPIA */}
+        <header className="flex flex-col md:flex-row items-center justify-between mb-10 gap-8">
+          <div className="flex items-center gap-6">
+            <div className="w-20 h-20 bg-white rounded-[28px] flex items-center justify-center border-4 border-blue-50 shadow-xl transition-transform hover:rotate-6">
+              <AssemblyIcon className="w-10 h-10" color="#0D7FF2" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1 uppercase italic">Taller de Ensamble</h2>
+              <p className="text-[#0D7FF2] font-black uppercase text-[10px] tracking-[4px] flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                ESTADO: EN LÍNEA
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-6 bg-white p-4 rounded-[24px] border-2 border-slate-100 shadow-lg">
+            <div className="text-right hidden sm:block">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tu Progreso Técnico</p>
+              <div className="flex items-center gap-3">
+                <ProgressBar progress={(completedCount/5)*100} className="w-32 h-2" />
+                <span className="text-sm font-black text-[#0D7FF2]">{completedCount}/5</span>
               </div>
-              <div className="flex items-center gap-4">
-                <UserProfileButton 
-                  user={user}
-                  size="medium"
-                  showBorder={false}
-                  fallbackType="icon"
-                />
-              </div>
             </div>
-          </header>
+            <UserProfileButton user={user} size="medium" fallbackType="icon" />
+          </div>
+        </header>
 
-          <section className="pb-6">
-            <div className="px-4 mt-4 mb-8">
-              <p className="text-base leading-6 font-semibold text-slate-900 mb-4">Progreso</p>
-              <ProgressBar progress={userProgress ? getProgressPercentage(userProgress) : 0} />
+        {/* DIÁLOGO CON ISAAC */}
+        <section className="mb-12 relative">
+          <div className="bg-white border-4 border-blue-50 rounded-[48px] p-8 md:p-10 shadow-xl flex flex-col md:flex-row items-center gap-10 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50/50 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+            
+            <div className="relative shrink-0 transition-transform duration-500 group-hover:scale-110">
+              <div className="absolute inset-0 bg-[#0D7FF2]/10 blur-3xl rounded-full"></div>
+              <img 
+                src={completedCount === 5 ? MbienHecho : Mreparando} 
+                alt="Isaac" 
+                className="w-32 h-32 md:w-44 md:h-44 object-contain relative z-10 drop-shadow-xl" 
+              />
             </div>
-
-            <div className="bg-white border-2 border-[#E2E8F0] rounded-3xl px-4 pt-3.75 pb-4 shadow-md">
-              <h1 className="text-[30px] leading-9.5 font-bold text-slate-900">{MODULE_INFO.name}</h1>
-              <p className="text-base leading-6 font-normal text-slate-500">{MODULE_INFO.description}</p>
+            
+            <div className="flex-1 space-y-3 relative z-10 text-center md:text-left">
+              <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">
+                {completedCount === 0 ? "¡HOLA, TÉCNICO!" : completedCount === 5 ? "¡ERES UN EXPERTO!" : "¡EXCELENTE TRABAJO!"}
+              </h1>
+              <p className="text-lg md:text-xl font-bold text-slate-500 leading-relaxed max-w-2xl">
+                {completedCount === 0 
+                  ? "Hoy aprenderemos a construir una computadora paso a paso. Prepara tus herramientas y elige un proyecto." 
+                  : completedCount === 5 
+                  ? "Has completado todas las misiones técnicas. ¡Ahora puedes repetir cualquier nivel para perfeccionar tu técnica!" 
+                  : "Estás haciendo un trabajo increíble en el banco de pruebas. Cada pieza nos acerca más al éxito."}
+              </p>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="pb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {Array.from({ length: MODULE_INFO.totalLevels }, (_, index) => {
-                const levelNumber = index + 1;
-                const levelConfig = getLevelConfig(levelNumber);
-                const levelStatus = getLevelStatus(levelNumber, userProgress);
-                const IconComponent = getIconComponent(levelConfig.icon);
+        {/* GRID DE PROYECTOS */}
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 mb-16">
+          {Array.from({ length: 5 }, (_, index) => {
+            const levelNumber = index + 1;
+            const config = getLevelConfig(levelNumber);
+            const status = getLevelStatus(levelNumber, userProgress);
+            const Icon = icons[config.icon] || ComponentsIcon;
 
-                return (
-                  <div key={levelNumber} className="space-y-2">
-                    <LevelCard
-                      title={levelConfig.title}
-                      subtitle={getLevelSubtitle(levelNumber, userProgress)}
-                      variant={levelStatus.variant}
-                      active={levelStatus.active}
-                      completed={levelStatus.completed}
-                      icon={IconComponent}
-                      onClick={() => handleLevelClick(levelNumber)}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </section>
+            return (
+              <LevelCard
+                key={levelNumber}
+                levelNumber={levelNumber}
+                title={config.title}
+                subtitle={getLevelSubtitle(levelNumber, userProgress)}
+                variant={status.variant}
+                active={status.active}
+                completed={status.completed}
+                icon={Icon}
+                onClick={() => setCurrentLevel(levelNumber)}
+              />
+            );
+          })}
+        </section>
 
-          <section className="h-20 flex items-start justify-center py-18">
+        {/* BOTÓN DE SALIDA */}
+        <footer className="mt-auto flex justify-center py-8">
             <button
               type="button"
               onClick={onBack}
-              className="h-14 min-w-60 max-w-120 rounded-3xl bg-[#0D7FF2] text-white px-8 flex items-center justify-center gap-3 cursor-pointer hover:bg-[#0D7FF2]/90 hover:shadow-lg hover:scale-105 transition-all duration-200 font-bold text-lg"
+              className="h-14 min-w-72 rounded-2xl bg-[#0D7FF2] text-white px-8 flex items-center justify-center gap-4 cursor-pointer hover:bg-[#0D7FF2]/90 hover:shadow-xl hover:scale-105 transition-all duration-300 font-black shadow-lg shadow-blue-200 uppercase tracking-[2px] text-sm"
             >
-              <span className="text-[22px]">←</span>
+              <span className="text-2xl">←</span>
               <span>Volver al Menú Principal</span>
             </button>
-          </section>
-        </div>
+        </footer>
+
       </div>
     </div>
   );
