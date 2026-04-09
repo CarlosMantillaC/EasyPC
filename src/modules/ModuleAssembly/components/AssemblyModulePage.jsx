@@ -14,7 +14,7 @@ import { getLevelStatus, getLevelSubtitle, getLevelConfig, MODULE_INFO } from ".
 import Level1Motherboard from "./levels/Level1Motherboard";
 import Level2Ram from "./levels/Level2Ram";
 import Level3Storage from "./levels/Level3Storage";
-import Level4Full from "./levels/Level4Full";
+import Level4Full from "./levels/Level4Power";
 import Level5Chasis from "./levels/Level5Chasis";
 
 import SuccessModal from "./SuccessModal";

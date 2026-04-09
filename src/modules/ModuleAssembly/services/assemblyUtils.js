@@ -2,6 +2,7 @@
  * Utilidades específicas para el módulo de Armando (Ensamble)
  */
 
+import { useState, useEffect } from "react";
 import { ASSEMBLY_LEVELS, MODULE_INFO, PROGRESS_MESSAGES } from './assemblyConstants';
 
 export function getLevelStatus(levelNumber, userProgress) {
@@ -57,4 +58,58 @@ export function getProgressMessage(userProgress) {
 
 export function getLevelConfig(levelNumber) {
   return ASSEMBLY_LEVELS[levelNumber];
+}
+
+/**
+ * HOOK PARA EL MANEJO DE LA LÓGICA DE CADA NIVEL (REFACTORIZADO)
+ */
+export function useAssemblyLevel({ stepsCount, onLevelComplete }) {
+  const [step, setStep] = useState(1);
+  const [isCarrying, setIsCarrying] = useState(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobileView = window.innerWidth < 1024;
+      setIsMobile(isMobileView);
+      if (isMobileView) {
+        const availableWidth = window.innerWidth - 40;
+        const newScale = Math.min(1, availableWidth / 800);
+        setScale(newScale);
+      } else {
+        setScale(1);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (step > stepsCount) {
+      const timer = setTimeout(() => onLevelComplete(), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [step, stepsCount, onLevelComplete]);
+
+  useEffect(() => {
+    const handleMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("pointermove", handleMove);
+    return () => window.removeEventListener("pointermove", handleMove);
+  }, []);
+
+  const progressPercent = Math.round(((step - 1) / stepsCount) * 100);
+
+  return {
+    step,
+    setStep,
+    isCarrying,
+    setIsCarrying,
+    mousePos,
+    isMobile,
+    scale,
+    progressPercent
+  };
 }
